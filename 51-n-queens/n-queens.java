@@ -1,46 +1,35 @@
 class Solution {
-    public static boolean issafe(char board[][],int row,int col){
-        for(int i=row-1;i>=0;i--){
-            if(board[i][col] == 'Q'){
-                return false;
+    public static void solve(int col, char[][] board, int n,int[] leftRow, int[] upperDiagonal, int[] lowerDiagonal, List<List<String>> res) {
+        if (col == n) {
+            List<String> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                temp.add(new String(board[i]));
             }
-        }
-        for(int i=row-1,j=col-1;i>=0&&j>=0;i--,j--){
-            if(board[i][j]=='Q'){
-                return false;
-            }
-        }
-        for(int i=row-1,j=col+1;i>=0&&j<board.length;i--,j++){
-            if(board[i][j] == 'Q'){
-                return false;
-            }
-        }
-        return true; 
-    }
-    public static void nqueens(char board[][],int row,List<List<String>> allBoards){
-        if(row == board.length){
-            List<String> newBoard = new ArrayList<>();
-            for (int i = 0; i < board.length; i++) {
-                newBoard.add(new String(board[i]));
-            }
-            allBoards.add(newBoard);
+            res.add(temp);
             return;
         }
-        for(int j =0;j<board.length;j++){
-            if(issafe(board,row,j)){
-                board[row][j] = 'Q';
-                nqueens(board,row+1,allBoards);
-                board[row][j] = '.';
+        for (int row = 0; row < n; row++) {
+            if (leftRow[row] == 0 && lowerDiagonal[row + col] == 0 && upperDiagonal[n - 1 + col - row] == 0) {
+                board[row][col] = 'Q';
+                leftRow[row] = 1;
+                lowerDiagonal[row + col] = 1;
+                upperDiagonal[n - 1 + col - row] = 1;
+                solve(col + 1, board, n, leftRow, upperDiagonal, lowerDiagonal, res);
+                board[row][col] = '.';
+                leftRow[row] = 0;
+                lowerDiagonal[row + col] = 0;
+                upperDiagonal[n - 1 + col - row] = 0;
             }
         }
     }
     public List<List<String>> solveNQueens(int n) {
-        List<List<String>> allBoards = new ArrayList<>();
-        char [][] board = new char[n][n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(board[i],'.');
-        }
-        nqueens(board,0,allBoards);
-        return allBoards;
+        List<List<String>> res = new ArrayList<>();
+        char[][] board = new char[n][n];
+        for (char[] row : board) Arrays.fill(row, '.');
+        int[] leftRow = new int[n];
+        int[] lowerDiagonal = new int[2 * n - 1];
+        int[] upperDiagonal = new int[2 * n - 1];
+        solve(0, board, n, leftRow, upperDiagonal, lowerDiagonal, res);
+        return res;
     }
 }
