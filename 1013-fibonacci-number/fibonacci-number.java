@@ -1,14 +1,13 @@
 class Solution {
     public int fib(int n) {
-        return fibonacci(n);
-    }
-    private static int fibonacci(int n) {
-        int [] dp = new int[n+1];
-        Arrays.fill(dp,-1);
-        if (n <= 1) {
-            return n;
+        int prev2 =0;
+        int prev =1;
+        if(n<2) return n;
+        for(int i=2;i<=n;i++){
+            int curr = prev + prev2;
+            prev2 = prev;
+            prev = curr;
         }
-        if(dp[n]!=-1) return dp[n];
-        return dp[n] = fibonacci(n - 1) + fibonacci(n - 2);
+        return prev;
     }
 }
